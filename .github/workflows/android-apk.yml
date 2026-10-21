@@ -20,7 +20,7 @@ jobs:
           cd "$RUNNER_TEMP"
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-12266719_latest.zip
           unzip -q commandlinetools-linux-12266719_latest.zip
-          mkdir -p "$ANDROID_HOME/cmdline-tools/latest"
+          rm -rf "$ANDROID_HOME/cmdline-tools/latest" && mkdir -p "$ANDROID_HOME/cmdline-tools/latest"
           mv cmdline-tools/* "$ANDROID_HOME/cmdline-tools/latest/"
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$ANDROID_HOME" --licenses
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$ANDROID_HOME" "platforms;android-35" "build-tools;35.0.0"
