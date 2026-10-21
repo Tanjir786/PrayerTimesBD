@@ -1,6 +1,5 @@
 
 name: Build Android APK
-
 on:
   workflow_dispatch:
   push:
@@ -15,18 +14,20 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      
-      
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install Android SDK packages
+      - name: Install Android SDK
         run: |
-          yes | sdkmanager --licenses
-          sdkmanager "platforms;android-35" "build-tools;35.0.0"
-          
-      - name: Build APK
-        run: gradle assembleDebug
+          mkdir -p "$ANDROID_HOME/cmdline-tools"
+          cd "$RUNNER_TEMP"
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-12266719_latest.zip
+          unzip -q commandlinetools-linux-12266719_latest.zip
+          mkdir -p "$ANDROID_HOME/cmdline-tools/latest"
+          mv cmdline-tools/* "$ANDROID_HOME/cmdline-tools/latest/"
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$ANDROID_HOME" --licenses
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$ANDROID_HOME" "platforms;android-35" "build-tools;35.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+      - run: gradle assembleDebug
       - uses: actions/upload-artifact@v4
         with:
           name: PrayerTimesBD-APK
